@@ -1,0 +1,17 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "8756cc5e1cc84a7ebe2166b8730d2eaa.lZmXuBSNGeCKNztK",
+    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(pnpm add recharts)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
