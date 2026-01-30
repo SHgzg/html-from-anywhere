@@ -12,7 +12,8 @@
       "Bash(pnpm add recharts)",
       "Bash(pnpm build:*)",
       "Bash(pnpm install:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

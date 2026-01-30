@@ -1,5 +1,5 @@
 {
-  "name": "@report-cli/registry-core",
+  "name": "@report-tool/registry-core",
   "version": "0.1.0",
   "description": "Core registry infrastructure for plugin system",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
     "test": "echo \"skip\""
   },
   "dependencies": {
-    "@report-cli/types": "workspace:*",
+    "@report-tool/types": "workspace:*",
     "semver": "^7.5.4"
   },
   "devDependencies": {

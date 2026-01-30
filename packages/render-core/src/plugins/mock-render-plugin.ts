@@ -4,7 +4,7 @@
  * 用于演示和测试的 Mock 渲染插件
  */
 
-import { RenderPlugin, DataResult, ExecutableConfig, RuntimeContext, RenderResult, RenderMode } from '@report-cli/types';
+import { RenderPlugin, DataResult, ExecutableConfig, RuntimeContext, RenderResult, RenderMode } from '@report-tool/types';
 
 /**
  * HTML Render Plugin

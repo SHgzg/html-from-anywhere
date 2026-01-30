@@ -4,8 +4,8 @@
  * 负责管理和分发 Render 插件
  */
 
-import { BaseRegistry } from '@report-cli/registry-core';
-import { RenderPlugin, RenderMode } from '@report-cli/types';
+import { BaseRegistry } from '@report-tool/registry-core';
+import { RenderPlugin, RenderMode } from '@report-tool/types';
 
 /**
  * Render Registry
@@ -38,10 +38,10 @@ export class RenderRegistry extends BaseRegistry<RenderMode, RenderPlugin> {
    */
   async render(
     mode: RenderMode,
-    data: import('@report-cli/types').DataResult[],
-    config: import('@report-cli/types').ExecutableConfig,
-    runtime: import('@report-cli/types').RuntimeContext
-  ): Promise<import('@report-cli/types').RenderResult> {
+    data: import('@report-tool/types').DataResult[],
+    config: import('@report-tool/types').ExecutableConfig,
+    runtime: import('@report-tool/types').RuntimeContext
+  ): Promise<import('@report-tool/types').RenderResult> {
     const plugin = this.get(mode);
     return await plugin.render(data, config, runtime);
   }

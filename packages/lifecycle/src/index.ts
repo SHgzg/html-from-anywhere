@@ -5,12 +5,12 @@
  * SKELETON: 当前为桩代码，演示完整流程
  */
 
-import { LifecycleOrchestrator } from '@report-cli/types';
-import { bootstrap } from '@report-cli/bootstrap';
-import { resolveConfig } from '@report-cli/config';
-import { fetchAllData } from '@report-cli/data-core';
-import { renderReports } from '@report-cli/render-core';
-import { executeActions } from '@report-cli/action-core';
+import { LifecycleOrchestrator } from '@report-tool/types';
+import { bootstrap } from '@report-tool/bootstrap';
+import { resolveConfig } from '@report-tool/config';
+import { fetchAllData } from '@report-tool/data-core';
+import { renderReports } from '@report-tool/render-core';
+import { executeActions } from '@report-tool/action-core';
 
 export class Orchestrator implements LifecycleOrchestrator {
   async run(): Promise<void> {

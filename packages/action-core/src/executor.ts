@@ -5,7 +5,7 @@
  */
 
 import { ActionRegistry } from './registry';
-import { ActionConfig, DataResult, RenderResult, RuntimeContext, ActionPayload } from '@report-cli/types';
+import { ActionConfig, DataResult, RenderResult, RuntimeContext, ActionPayload } from '@report-tool/types';
 
 /**
  * Action 执行上下文
@@ -55,7 +55,7 @@ export async function executeActions(
 
     try {
       // 构建执行上下文
-      const actionContext: import('@report-cli/types').ActionContext = {
+      const actionContext: import('@report-tool/types').ActionContext = {
         runtime: context.runtime,
         data: context.data,
         renderResult: context.renderResult

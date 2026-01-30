@@ -1,5 +1,5 @@
 {
-  "name": "@report-cli/config",
+  "name": "@report-tool/config",
   "version": "0.1.0",
   "description": "Config phase - parse user_config, apply enhances",
   "main": "dist/index.js",
@@ -10,8 +10,8 @@
     "test": "echo \"skip\""
   },
   "dependencies": {
-    "@report-cli/types": "workspace:*",
-    "@report-cli/bootstrap": "workspace:*"
+    "@report-tool/types": "workspace:*",
+    "@report-tool/bootstrap": "workspace:*"
   },
   "keywords": ["config"],
   "author": "",

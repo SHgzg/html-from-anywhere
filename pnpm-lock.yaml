@@ -29,7 +29,7 @@ importers:
 
   apps/report-cli:
     dependencies:
-      '@report-cli/lifecycle':
+      '@report-tool/lifecycle':
         specifier: workspace:*
         version: link:../../packages/lifecycle
     devDependencies:
@@ -45,55 +45,55 @@ importers:
 
   packages/action-core:
     dependencies:
-      '@report-cli/registry-core':
+      '@report-tool/registry-core':
         specifier: workspace:*
         version: link:../registry-core
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
 
   packages/bootstrap:
     dependencies:
-      '@report-cli/action-core':
+      '@report-tool/action-core':
         specifier: workspace:*
         version: link:../action-core
-      '@report-cli/data-core':
+      '@report-tool/data-core':
         specifier: workspace:*
         version: link:../data-core
-      '@report-cli/enhance-core':
+      '@report-tool/enhance-core':
         specifier: workspace:*
         version: link:../enhance-core
-      '@report-cli/registry-core':
+      '@report-tool/registry-core':
         specifier: workspace:*
         version: link:../registry-core
-      '@report-cli/render-core':
+      '@report-tool/render-core':
         specifier: workspace:*
         version: link:../render-core
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
 
   packages/config:
     dependencies:
-      '@report-cli/bootstrap':
+      '@report-tool/bootstrap':
         specifier: workspace:*
         version: link:../bootstrap
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
 
   packages/data-core:
     dependencies:
-      '@report-cli/registry-core':
+      '@report-tool/registry-core':
         specifier: workspace:*
         version: link:../registry-core
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
 
   packages/enhance-core:
     dependencies:
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
       semver:
@@ -106,28 +106,28 @@ importers:
 
   packages/lifecycle:
     dependencies:
-      '@report-cli/action-core':
+      '@report-tool/action-core':
         specifier: workspace:*
         version: link:../action-core
-      '@report-cli/bootstrap':
+      '@report-tool/bootstrap':
         specifier: workspace:*
         version: link:../bootstrap
-      '@report-cli/config':
+      '@report-tool/config':
         specifier: workspace:*
         version: link:../config
-      '@report-cli/data-core':
+      '@report-tool/data-core':
         specifier: workspace:*
         version: link:../data-core
-      '@report-cli/render-core':
+      '@report-tool/render-core':
         specifier: workspace:*
         version: link:../render-core
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
 
   packages/registry-core:
     dependencies:
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
       semver:
@@ -143,10 +143,10 @@ importers:
 
   packages/render-core:
     dependencies:
-      '@report-cli/registry-core':
+      '@report-tool/registry-core':
         specifier: workspace:*
         version: link:../registry-core
-      '@report-cli/types':
+      '@report-tool/types':
         specifier: workspace:*
         version: link:../types
 

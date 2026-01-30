@@ -5,8 +5,8 @@
  */
 
 import { DataRegistry } from './registry';
-import { DataItemConfig, ExecutableConfig, RuntimeContext, DataResult } from '@report-cli/types';
-import { DataSourceType } from '@report-cli/types';
+import { DataItemConfig, ExecutableConfig, RuntimeContext, DataResult } from '@report-tool/types';
+import { DataSourceType } from '@report-tool/types';
 
 /**
  * 获取所有数据

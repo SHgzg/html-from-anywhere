@@ -5,7 +5,7 @@
  */
 
 import { EnhanceRegistry } from './registry';
-import { UserConfig, RuntimeContext, ExecutableConfig } from '@report-cli/types';
+import { UserConfig, RuntimeContext, ExecutableConfig } from '@report-tool/types';
 
 /**
  * 应用 Enhances

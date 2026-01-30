@@ -4,8 +4,8 @@
  * 负责管理和分发 Action 插件
  */
 
-import { BaseRegistry } from '@report-cli/registry-core';
-import { ActionPlugin, ActionPayload, ActionContext } from '@report-cli/types';
+import { BaseRegistry } from '@report-tool/registry-core';
+import { ActionPlugin, ActionPayload, ActionContext } from '@report-tool/types';
 
 /**
  * Action Registry

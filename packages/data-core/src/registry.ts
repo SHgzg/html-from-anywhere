@@ -4,8 +4,8 @@
  * 负责管理和分发 Data 插件
  */
 
-import { BaseRegistry } from '@report-cli/registry-core';
-import { DataPlugin, DataSourceType } from '@report-cli/types';
+import { BaseRegistry } from '@report-tool/registry-core';
+import { DataPlugin, DataSourceType } from '@report-tool/types';
 
 /**
  * Data Registry
@@ -37,9 +37,9 @@ export class DataRegistry extends BaseRegistry<DataSourceType, DataPlugin> {
    */
   async fetch(
     type: DataSourceType,
-    config: import('@report-cli/types').DataItemConfig,
-    context: import('@report-cli/types').RuntimeContext
-  ): Promise<import('@report-cli/types').DataResult> {
+    config: import('@report-tool/types').DataItemConfig,
+    context: import('@report-tool/types').RuntimeContext
+  ): Promise<import('@report-tool/types').DataResult> {
     const plugin = this.get(type);
     return await plugin.fetch(config, context);
   }

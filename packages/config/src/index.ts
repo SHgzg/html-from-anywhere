@@ -5,7 +5,7 @@
  * SKELETON: 当前为桩代码，返回模拟数据
  */
 
-import { RuntimeContext, ExecutableConfig } from '@report-cli/types';
+import { RuntimeContext, ExecutableConfig } from '@report-tool/types';
 
 export async function resolveConfig(runtime: RuntimeContext): Promise<ExecutableConfig> {
   console.log('[Config] Resolving config...');

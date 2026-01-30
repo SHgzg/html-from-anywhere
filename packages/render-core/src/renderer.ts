@@ -5,7 +5,7 @@
  */
 
 import { RenderRegistry } from './registry';
-import { ExecutableConfig, RuntimeContext, DataResult, RenderResult, RenderMode } from '@report-cli/types';
+import { ExecutableConfig, RuntimeContext, DataResult, RenderResult, RenderMode } from '@report-tool/types';
 
 /**
  * 渲染报告

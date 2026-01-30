@@ -5,7 +5,7 @@
  * 这是一个 Skeleton 版本，用于验证架构可行性
  */
 
-import { Orchestrator } from '@report-cli/lifecycle';
+import { Orchestrator } from '@report-tool/lifecycle';
 
 async function main() {
   const orchestrator = new Orchestrator();

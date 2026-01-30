@@ -1,5 +1,5 @@
 {
-  "name": "@report-cli/types",
+  "name": "@report-tool/types",
   "version": "0.1.0",
   "description": "Core type definitions for report-cli",
   "main": "dist/index.js",

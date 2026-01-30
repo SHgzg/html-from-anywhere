@@ -4,7 +4,7 @@
  * 用于演示和测试的 Mock 数据插件
  */
 
-import { DataPlugin, DataItemConfig, RuntimeContext, DataResult, DataSourceType } from '@report-cli/types';
+import { DataPlugin, DataItemConfig, RuntimeContext, DataResult, DataSourceType } from '@report-tool/types';
 
 /**
  * File Data Plugin

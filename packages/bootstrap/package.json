@@ -1,5 +1,5 @@
 {
-  "name": "@report-cli/bootstrap",
+  "name": "@report-tool/bootstrap",
   "version": "0.1.0",
   "description": "Bootstrap phase - load .env, connect DB, build RuntimeContext",
   "main": "dist/index.js",
@@ -10,12 +10,12 @@
     "test": "echo \"skip\""
   },
   "dependencies": {
-    "@report-cli/types": "workspace:*",
-    "@report-cli/registry-core": "workspace:*",
-    "@report-cli/action-core": "workspace:*",
-    "@report-cli/data-core": "workspace:*",
-    "@report-cli/render-core": "workspace:*",
-    "@report-cli/enhance-core": "workspace:*"
+    "@report-tool/types": "workspace:*",
+    "@report-tool/registry-core": "workspace:*",
+    "@report-tool/action-core": "workspace:*",
+    "@report-tool/data-core": "workspace:*",
+    "@report-tool/render-core": "workspace:*",
+    "@report-tool/enhance-core": "workspace:*"
   },
   "keywords": ["bootstrap"],
   "author": "",

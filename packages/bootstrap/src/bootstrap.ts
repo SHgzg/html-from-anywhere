@@ -4,12 +4,12 @@
  * 负责：加载 .env、连接 DB、构建 RuntimeContext、初始化 Registry
  */
 
-import { RuntimeContext, EnvConfig, DateContext, CliArgs } from '@report-cli/types';
+import { RuntimeContext, EnvConfig, DateContext, CliArgs } from '@report-tool/types';
 import { createRegistries, lockRegistries, type Registries } from './registry-factory';
-import { getAllMockDataPlugins } from '@report-cli/data-core';
-import { htmlRenderPlugin } from '@report-cli/render-core';
-import { getAllMockActionPlugins } from '@report-cli/action-core';
-import type { DataSourceType } from '@report-cli/types';
+import { getAllMockDataPlugins } from '@report-tool/data-core';
+import { htmlRenderPlugin } from '@report-tool/render-core';
+import { getAllMockActionPlugins } from '@report-tool/action-core';
+import type { DataSourceType } from '@report-tool/types';
 
 /**
  * Bootstrap 主函数

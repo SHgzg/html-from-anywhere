@@ -4,7 +4,7 @@
  * 用于演示和测试的 Mock Action 插件
  */
 
-import { ActionPlugin, ActionPayload, ActionContext, ActionConfig } from '@report-cli/types';
+import { ActionPlugin, ActionPayload, ActionContext, ActionConfig } from '@report-tool/types';
 
 /**
  * Log Action Plugin

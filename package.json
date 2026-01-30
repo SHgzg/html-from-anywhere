@@ -1,11 +1,11 @@
 {
-  "name": "report-cli",
+  "name": "report-tool",
   "version": "0.1.0",
   "description": "A flexible report generation CLI tool",
   "private": true,
   "scripts": {
     "build": "pnpm -r --workspace-concurrency=1 run build",
-    "dev": "pnpm --filter report-cli dev",
+    "dev": "pnpm --filter report-tool dev",
     "test": "pnpm -r test",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.ts\"",

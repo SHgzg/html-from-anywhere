@@ -5,8 +5,8 @@
  */
 
 import semver from 'semver';
-import { EnhancePlugin } from '@report-cli/types';
-import { CONTRACTS_VERSION } from '@report-cli/types';
+import { EnhancePlugin } from '@report-tool/types';
+import { CONTRACTS_VERSION } from '@report-tool/types';
 
 /**
  * Enhance Registry
@@ -62,9 +62,9 @@ export class EnhanceRegistry {
    * @returns 增强后的配置
    */
   applyAll(
-    userConfig: import('@report-cli/types').UserConfig,
-    context: import('@report-cli/types').RuntimeContext
-  ): import('@report-cli/types').UserConfig {
+    userConfig: import('@report-tool/types').UserConfig,
+    context: import('@report-tool/types').RuntimeContext
+  ): import('@report-tool/types').UserConfig {
     return this.list.reduce(
       (config, plugin) => plugin.apply(config, context),
       userConfig

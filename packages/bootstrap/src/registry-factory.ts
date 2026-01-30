@@ -4,12 +4,12 @@
  * 负责创建和初始化所有 Registry 实例
  */
 
-import { CONTRACTS_VERSION } from '@report-cli/types';
-import { ActionRegistry } from '@report-cli/action-core';
-import { DataRegistry } from '@report-cli/data-core';
-import { RenderRegistry } from '@report-cli/render-core';
-import { EnhanceRegistry } from '@report-cli/enhance-core';
-import { Registries } from '@report-cli/types';
+import { CONTRACTS_VERSION } from '@report-tool/types';
+import { ActionRegistry } from '@report-tool/action-core';
+import { DataRegistry } from '@report-tool/data-core';
+import { RenderRegistry } from '@report-tool/render-core';
+import { EnhanceRegistry } from '@report-tool/enhance-core';
+import { Registries } from '@report-tool/types';
 
 /**
  * 创建并初始化所有 Registry
@@ -47,4 +47,4 @@ export function lockRegistries(registries: Registries): void {
 }
 
 // Re-export types
-export type { Registries } from '@report-cli/types';
+export type { Registries } from '@report-tool/types';

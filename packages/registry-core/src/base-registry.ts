@@ -15,7 +15,7 @@ import {
   PluginNotFoundError,
   PluginIncompatibleError,
   PluginTypeError,
-} from '@report-cli/types';
+} from '@report-tool/types';
 
 /**
  * Registry 基类
