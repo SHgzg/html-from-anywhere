@@ -1,27 +1,32 @@
 {
-  "title": "Demo Report",
+  "report": {
+    "title": "Daily Report - {{YYYY}}-{{MM}}-{{DD}}",
+    "data": []
+  },
   "data": [
     {
       "title": "Sales Data",
+      "tag": "inline",
       "source": "inline:demo"
     },
     {
-      "title": "API Metrics",
-      "source": "https://api.example.com/metrics"
+      "title": "API Metrics - {{rawDate}}",
+      "tag": "https",
+      "source": "https://api.example.com/metrics?date={{YYYYMMDD}}"
     }
   ],
   "actions": [
     {
-      "on": "data_ready",
       "type": "log",
+      "on": "data_ready",
       "spec": {}
     },
     {
-      "on": "report_ready",
       "type": "email",
+      "on": "report_ready",
       "spec": {
         "to": "user@example.com",
-        "subject": "Daily Report",
+        "subject": "Report for {{YYYYMMDD}}",
         "template": "default"
       }
     }

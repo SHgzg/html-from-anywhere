@@ -6,6 +6,7 @@
 
 import { RuntimeContext, EnvConfig, DateContext, CliArgs } from '@report-tool/types';
 import { createRegistries, lockRegistries, type Registries } from './registry-factory';
+import { parseCliArgs as parseCliArgsInternal, showHelp, showVersion } from './cli-parser';
 import { getAllMockDataPlugins } from '@report-tool/data-core';
 import { htmlRenderPlugin } from '@report-tool/render-core';
 import { getAllMockActionPlugins } from '@report-tool/action-core';
@@ -17,8 +18,32 @@ import type { DataSourceType } from '@report-tool/types';
  * 负责初始化系统运行时上下文
  *
  * @returns 完整的 RuntimeContext
+ * @throws {Error} 如果 CLI 参数解析失败或需要退出程序
  */
 export async function bootstrap(): Promise<RuntimeContext> {
+  // 0. 解析 CLI 参数（最先执行，因为可能需要显示帮助/版本信息）
+  const parseResult = parseCliArgsInternal();
+
+  // 处理帮助信息
+  if (parseResult.showHelp) {
+    showHelp();
+    process.exit(0);
+  }
+
+  // 处理版本信息
+  if (parseResult.showVersion) {
+    showVersion();
+    process.exit(0);
+  }
+
+  // 处理解析错误
+  if (parseResult.errors.length > 0) {
+    console.error('Errors:');
+    parseResult.errors.forEach(error => console.error(`  ❌ ${error}`));
+    console.error('\nUse --help for usage information');
+    throw new Error('CLI argument parsing failed');
+  }
+
   console.log('[Bootstrap] Starting...');
 
   // 1. 创建 Registry 实例
@@ -33,9 +58,8 @@ export async function bootstrap(): Promise<RuntimeContext> {
   console.log('[Bootstrap] Loading environment config...');
   const envConfig = loadEnvConfig();
 
-  // 4. 解析 CLI 参数
-  console.log('[Bootstrap] Parsing CLI arguments...');
-  const cliArgs = parseCliArgs();
+  // 4. 使用已解析的 CLI 参数
+  const cliArgs = parseResult.args;
 
   // 5. 构建日期上下文
   console.log('[Bootstrap] Building date context...');
@@ -71,18 +95,6 @@ function loadEnvConfig(): EnvConfig {
       database: 'report_config',
       collection: 'user_configs'
     }
-  };
-}
-
-/**
- * 解析 CLI 参数
- *
- * TODO: 实现真实的 CLI 参数解析
- */
-function parseCliArgs(): CliArgs {
-  // SKELETON: 返回模拟参数
-  return {
-    configPath: './config.json'
   };
 }
 

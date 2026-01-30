@@ -1,57 +1,59 @@
 /**
  * Config Package
  * 负责：解析 user_config、应用 enhances、生成 ExecutableConfig
- *
- * SKELETON: 当前为桩代码，返回模拟数据
  */
 
 import { RuntimeContext, ExecutableConfig } from '@report-tool/types';
+import { loadConfigFromFile, validateConfig, type UserConfig } from './loader';
+import { replaceTemplateVariables } from './templating';
 
+/**
+ * 解析配置
+ *
+ * @param runtime - 运行时上下文
+ * @returns ExecutableConfig
+ */
 export async function resolveConfig(runtime: RuntimeContext): Promise<ExecutableConfig> {
   console.log('[Config] Resolving config...');
 
-  // TODO: Implement real config resolution
-  // 1. Load user_config (DB or local file)
-  // 2. Apply template resolution
-  // 3. Check deprecated
-  // 4. Apply enhances
-  // 5. Build ExecutableConfig
+  // 1. Load user_config (from file for now, DB support later)
+  const configPath = runtime.cliArgs.configPath || './config.json';
+  let userConfig: UserConfig;
 
-  const mockExecutableConfig: ExecutableConfig = {
+  try {
+    userConfig = loadConfigFromFile(configPath);
+  } catch (error) {
+    throw new Error(`Failed to load config from ${configPath}: ${error}`);
+  }
+
+  // 2. Apply template resolution (replace date variables)
+  const configWithTemplates = replaceTemplateVariables(userConfig, runtime.dateContext);
+
+  // 3. Validate config
+  validateConfig(configWithTemplates);
+
+  // 4. Apply enhances (TODO: not implemented yet)
+  // const enhancedConfig = await applyEnhances(configWithTemplates, runtime);
+
+  // 5. Build ExecutableConfig
+  const executableConfig: ExecutableConfig = {
     report: {
-      title: 'Demo Report',
-      data: []
+      title: configWithTemplates.report?.title || 'Report',
+      data: configWithTemplates.report?.data || []
     },
-    data: [
-      {
-        title: 'Sales Data',
-        tag: 'inline',
-        source: 'inline:demo'
-      },
-      {
-        title: 'API Metrics',
-        tag: 'https',
-        source: 'https://api.example.com/metrics'
-      }
-    ],
-    actions: [
-      {
-        type: 'log',
-        on: 'data_ready',
-        spec: {}
-      },
-      {
-        type: 'email',
-        on: 'report_ready',
-        spec: {
-          to: 'user@example.com',
-          subject: 'Daily Report',
-          template: 'default'
-        }
-      }
-    ]
+    data: configWithTemplates.data || [],
+    actions: (configWithTemplates.actions || []).map(action => ({
+      ...action,
+      spec: action.spec || {}
+    })),
+    meta: configWithTemplates.meta as Record<string, unknown> | undefined,
+    deprecated: configWithTemplates.deprecated as any
   };
 
-  console.log('[Config] Complete (SKELETON)');
-  return mockExecutableConfig;
+  console.log(`[Config] Loaded ${executableConfig.data.length} data items and ${executableConfig.actions.length} actions`);
+  console.log('[Config] Complete');
+
+  return executableConfig;
 }
+
+export * from './loader';
