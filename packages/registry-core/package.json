@@ -1,0 +1,23 @@
+{
+  "name": "@report-cli/registry-core",
+  "version": "0.1.0",
+  "description": "Core registry infrastructure for plugin system",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "echo \"skip\""
+  },
+  "dependencies": {
+    "@report-cli/types": "workspace:*",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.5.6",
+    "typescript": "^5.3.3"
+  },
+  "keywords": ["registry", "plugin"],
+  "author": "",
+  "license": "MIT"
+}

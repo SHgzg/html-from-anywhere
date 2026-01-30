@@ -1,0 +1,94 @@
+{
+  "report_id": "daily_check_report_full_example",
+  "description": "每日数据检查报告（完整能力示例）",
+  "author": "data_team",
+  "reviewer": "platform_team",
+  "group": "data_team",
+
+  "report": {
+    "title": "每日数据检查报告",
+    "data": [
+      {
+        "title": "用户信息检查",
+        "tag": "table",
+        "source": "https://jsonplaceholder.typicode.com/users",
+        "enhance": "enhance_users_basic"
+      },
+      {
+        "title": "帖子信息检查",
+        "tag": "table",
+        "source": "https://jsonplaceholder.typicode.com/posts",
+        "enhance": "enhance_posts_basic"
+      },
+      {
+        "title": "内联自定义消息",
+        "tag": "table",
+        "source": "[{\"id\":101,\"type\":\"系统消息\",\"content\":\"系统维护通知\",\"priority\":\"high\"},{\"id\":102,\"type\":\"系统消息\",\"content\":\"版本更新公告\",\"priority\":\"normal\"}]",
+        "enhance": "enhance_inline_messages"
+      },
+      {
+        "title": "本地单文件评论数据",
+        "tag": "table",
+        "source": "/data/comments/comments.json",
+        "enhance": "enhance_comments_file"
+      },
+      {
+        "title": "用户分片 CSV 数据",
+        "tag": "table",
+        "source": {
+          "value": "/data/users",
+          "pattern": "users_*.csv"
+        },
+        "enhance": "enhance_users_sharded"
+      },
+      {
+        "title": "订单月度 CSV 数据",
+        "tag": "table",
+        "source": {
+          "value": "/data/orders",
+          "pattern": "orders_2025_*.csv"
+        },
+        "enhance": "enhance_orders_monthly"
+      }
+    ]
+  },
+
+  "actions": [
+    {
+      "type": "email",
+      "on": "report_ready",
+      "spec": {
+        "to": ["data-team@domain.com"],
+        "cc": ["reviewer@domain.com"],
+        "subject": "每日数据检查报告",
+        "from": "noreply@domain.com",
+        "mode": "inline"
+      }
+    },
+    {
+      "type": "storage",
+      "on": "report_ready",
+      "spec": {
+        "provider": "minio",
+        "bucket": "reports",
+        "path": "daily_check_report/{{date}}.html"
+      }
+    },
+    {
+      "type": "email",
+      "on": "report_archived",
+      "spec": {
+        "to": ["data-team@domain.com"],
+        "subject": "每日数据检查报告已生成",
+        "from": "noreply@domain.com",
+        "mode": "link"
+      }
+    }
+  ],
+
+  "deprecated": {
+    "status": "redirect",
+    "redirectTo": "daily_check_report_v2",
+    "message": "该配置将被新版报告替代，请迁移到 daily_check_report_v2"
+  }
+}

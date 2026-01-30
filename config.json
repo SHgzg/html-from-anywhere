@@ -1,0 +1,29 @@
+{
+  "title": "Demo Report",
+  "data": [
+    {
+      "title": "Sales Data",
+      "source": "inline:demo"
+    },
+    {
+      "title": "API Metrics",
+      "source": "https://api.example.com/metrics"
+    }
+  ],
+  "actions": [
+    {
+      "on": "data_ready",
+      "type": "log",
+      "spec": {}
+    },
+    {
+      "on": "report_ready",
+      "type": "email",
+      "spec": {
+        "to": "user@example.com",
+        "subject": "Daily Report",
+        "template": "default"
+      }
+    }
+  ]
+}

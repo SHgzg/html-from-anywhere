@@ -1,0 +1,26 @@
+{
+  "name": "report-cli",
+  "version": "0.1.0",
+  "description": "Report CLI application",
+  "main": "dist/index.js",
+  "bin": {
+    "report-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@report-cli/lifecycle": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": ["cli", "report"],
+  "author": "",
+  "license": "MIT"
+}

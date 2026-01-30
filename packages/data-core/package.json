@@ -1,0 +1,19 @@
+{
+  "name": "@report-cli/data-core",
+  "version": "0.1.0",
+  "description": "Data phase - fetch and normalize data from sources",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "echo \"skip\""
+  },
+  "dependencies": {
+    "@report-cli/types": "workspace:*",
+    "@report-cli/registry-core": "workspace:*"
+  },
+  "keywords": ["data"],
+  "author": "",
+  "license": "MIT"
+}

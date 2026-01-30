@@ -9,7 +9,10 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(npx shadcn@latest add:*)",
-      "Bash(pnpm add recharts)"
+      "Bash(pnpm add recharts)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm install:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

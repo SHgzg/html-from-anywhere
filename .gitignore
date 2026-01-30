@@ -1,9 +1,59 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 dist/
-*.log
-.DS_Store
+build/
+*.tsbuildinfo
+
+# Environment files
 .env
 .env.local
-*.tsbuildinfo
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
 coverage/
 .nyc_output/
+*.lcov
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# Lock files (optional - uncomment if you want to ignore them)
+# pnpm-lock.yaml
+# package-lock.json
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
