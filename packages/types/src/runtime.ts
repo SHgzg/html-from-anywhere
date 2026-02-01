@@ -25,9 +25,42 @@ export interface MinioConnectionConfig {
   useSSL?: boolean;
 }
 
+/**
+ * 邮件传输配置
+ */
+export interface MailerConfig {
+  /** 邮件服务类型 */
+  type: 'smtp' | 'sendmail' | 'ses' | 'mailgun' | 'sparkpost';
+
+  /** SMTP 配置 */
+  smtp?: {
+    host: string;
+    port: number;
+    secure?: boolean;
+    auth?: {
+      user: string;
+      pass: string;
+    };
+  };
+
+  /** 默认发件人 */
+  defaultFrom?: string;
+
+  /** 默认回复地址 */
+  defaultReplyTo?: string;
+}
+
 export interface EnvConfig {
   minio: Record<string, MinioConnectionConfig>;
   userConfigDB: {
+    uri: string;
+    database: string;
+    collection: string;
+  };
+  /** 邮件传输配置 */
+  mailer: MailerConfig;
+  /** 邮件备份配置（使用同一数据库的 bak collection） */
+  mailBackupDB?: {
     uri: string;
     database: string;
     collection: string;

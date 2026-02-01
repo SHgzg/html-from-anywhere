@@ -9,7 +9,7 @@ import { createRegistries, lockRegistries, type Registries } from './registry-fa
 import { parseCliArgs as parseCliArgsInternal, showHelp, showVersion } from './cli-parser';
 import { getAllMockDataPlugins } from '@report-tool/data-core';
 import { htmlRenderPlugin } from '@report-tool/render-core';
-import { getAllMockActionPlugins } from '@report-tool/action-core';
+import { getAllMockActionPlugins, getNotificationPlugins, getStoragePlugins } from '@report-tool/action-core';
 import type { DataSourceType } from '@report-tool/types';
 
 /**
@@ -84,16 +84,59 @@ export async function bootstrap(): Promise<RuntimeContext> {
 /**
  * 加载环境配置
  *
- * TODO: 实现真实的 .env 加载逻辑
+ * TODO: 从 MongoDB 的 env collection 中获取配置
  */
 function loadEnvConfig(): EnvConfig {
   // SKELETON: 返回模拟配置
+  // 真实实现应该从 userConfigDB.collection 中读取
+
+  // 使用 userConfigDB 的同一数据库，但使用 bak collection
+  const dbUri = process.env.MONGO_URI || 'mongodb://localhost:27017';
+  const dbName = process.env.MONGO_DATABASE || 'report_config';
+
   return {
-    minio: {},
+    minio: {
+      // 默认 MinIO 配置
+      default: {
+        endpoint: process.env.MINIO_ENDPOINT || 'localhost',
+        port: parseInt(process.env.MINIO_PORT || '9000'),
+        useSSL: process.env.MINIO_USE_SSL === 'true',
+        accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+        secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
+        region: process.env.MINIO_REGION || 'us-east-1'
+      },
+      // 可以配置多个 MinIO 实例，用户通过名称选择
+      backup: {
+        endpoint: process.env.MINIO_BACKUP_ENDPOINT || 'backup.example.com',
+        port: parseInt(process.env.MINIO_BACKUP_PORT || '9000'),
+        useSSL: true,
+        accessKey: process.env.MINIO_BACKUP_ACCESS_KEY || '',
+        secretKey: process.env.MINIO_BACKUP_SECRET_KEY || ''
+      }
+    },
     userConfigDB: {
-      uri: 'mongodb://localhost:27017',
-      database: 'report_config',
-      collection: 'user_configs'
+      uri: dbUri,
+      database: dbName,
+      collection: process.env.MONGO_USER_CONFIG_COLLECTION || 'user_configs'
+    },
+    mailer: {
+      type: 'smtp',
+      smtp: {
+        host: process.env.SMTP_HOST || 'smtp.example.com',
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER || 'user@example.com',
+          pass: process.env.SMTP_PASS || 'password'
+        }
+      },
+      defaultFrom: process.env.MAIL_FROM || 'noreply@example.com',
+      defaultReplyTo: process.env.MAIL_REPLY_TO
+    },
+    mailBackupDB: {
+      uri: dbUri,
+      database: dbName,
+      collection: process.env.MONGO_MAIL_BACKUP_COLLECTION || 'bak'
     }
   };
 }
@@ -133,7 +176,7 @@ function buildDateContext(dateInput?: string): DateContext {
 function registerMockPlugins(registries: Registries): void {
   // 注册 Data 插件
   const dataPlugins = getAllMockDataPlugins();
-  dataPlugins.forEach((plugin, type) => {
+  dataPlugins.forEach((plugin: any, type: any) => {
     registries.dataRegistry.register(type as DataSourceType, plugin);
     console.log(`  ✓ Registered Data plugin: ${plugin.name} (${type})`);
   });
@@ -142,9 +185,23 @@ function registerMockPlugins(registries: Registries): void {
   registries.renderRegistry.register('html', htmlRenderPlugin);
   console.log(`  ✓ Registered Render plugin: ${htmlRenderPlugin.name} (html)`);
 
-  // 注册 Action 插件
+  // 注册 Mock Action 插件
   const actionPlugins = getAllMockActionPlugins();
-  actionPlugins.forEach((plugin, type) => {
+  actionPlugins.forEach((plugin: any, type: any) => {
+    registries.actionRegistry.register(type, plugin);
+    console.log(`  ✓ Registered Action plugin: ${plugin.name} (${type})`);
+  });
+
+  // 注册通知 Action 插件
+  const notificationPlugins = getNotificationPlugins();
+  notificationPlugins.forEach((plugin: any, type: any) => {
+    registries.actionRegistry.register(type, plugin);
+    console.log(`  ✓ Registered Action plugin: ${plugin.name} (${type})`);
+  });
+
+  // 注册存储 Action 插件
+  const storagePlugins = getStoragePlugins();
+  storagePlugins.forEach((plugin: any, type: any) => {
     registries.actionRegistry.register(type, plugin);
     console.log(`  ✓ Registered Action plugin: ${plugin.name} (${type})`);
   });
