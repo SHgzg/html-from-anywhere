@@ -24,6 +24,7 @@ yarn-error.log*
 coverage/
 .nyc_output/
 *.lcov
+test-reports/
 
 # IDE & Editor
 .vscode/

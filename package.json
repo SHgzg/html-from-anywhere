@@ -7,11 +7,17 @@
     "build": "pnpm -r --workspace-concurrency=1 run build",
     "dev": "pnpm --filter report-tool dev",
     "test": "pnpm -r test",
+    "test:lifecycle": "node tests/lifecycle-test.js",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.ts\"",
     "clean": "pnpm -r clean && rm -rf node_modules"
   },
-  "keywords": ["report", "cli", "email", "html"],
+  "keywords": [
+    "report",
+    "cli",
+    "email",
+    "html"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -20,6 +26,7 @@
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.56.0",
     "prettier": "^3.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "engines": {

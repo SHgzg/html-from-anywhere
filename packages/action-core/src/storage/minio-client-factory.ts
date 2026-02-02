@@ -86,7 +86,11 @@ export async function uploadToMinio(
     const result = await client.putObject(bucket, objectName, content, undefined, {
       'Content-Type': contentType
     });
-    return result;
+    // 转换 versionId: null -> undefined
+    return {
+      etag: result.etag,
+      versionId: result.versionId || undefined
+    };
   } catch (error) {
     throw new Error(`Failed to upload to MinIO: ${(error as Error).message}`);
   }

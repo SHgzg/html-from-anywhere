@@ -1,0 +1,56 @@
+{
+  "report": {
+    "title": "Test Report - {{YYYY}}-{{MM}}-{{DD}}",
+    "data": []
+  },
+  "data": [
+    {
+      "title": "Sales Data",
+      "tag": "inline",
+      "source": "inline:demo"
+    },
+    {
+      "title": "User Metrics",
+      "tag": "https",
+      "source": "https://api.example.com/metrics?date={{YYYYMMDD}}"
+    },
+    {
+      "title": "Local File",
+      "tag": "file",
+      "source": "./data/sample.json"
+    }
+  ],
+  "actions": [
+    {
+      "type": "log",
+      "on": "data_ready",
+      "spec": {
+        "level": "info"
+      }
+    },
+    {
+      "type": "file_output",
+      "on": "report_ready",
+      "spec": {
+        "path": "./output/report-{{YYYYMMDD}}.html"
+      }
+    },
+    {
+      "type": "syncToMinio",
+      "on": "report_ready",
+      "spec": {
+        "minioName": "default",
+        "bucket": "reports",
+        "filename": "report-{{YYYYMMDD}}.html"
+      }
+    },
+    {
+      "type": "sendEmail",
+      "on": "report_ready",
+      "spec": {
+        "to": "test@example.com",
+        "subject": "Test Report for {{YYYYMMDD}}"
+      }
+    }
+  ]
+}
