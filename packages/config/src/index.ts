@@ -4,7 +4,7 @@
  */
 
 import { RuntimeContext, ExecutableConfig } from '@report-tool/types';
-import { loadConfigFromFile, validateConfig, type UserConfig } from './loader';
+import { loadConfigFromFile, loadConfigFromMongo, validateConfig, type UserConfig } from './loader';
 import { replaceTemplateVariables } from './templating';
 
 /**
@@ -16,14 +16,38 @@ import { replaceTemplateVariables } from './templating';
 export async function resolveConfig(runtime: RuntimeContext): Promise<ExecutableConfig> {
   console.log('[Config] Resolving config...');
 
-  // 1. Load user_config (from file for now, DB support later)
-  const configPath = runtime.cliArgs.configPath || './config.json';
   let userConfig: UserConfig;
 
-  try {
-    userConfig = loadConfigFromFile(configPath);
-  } catch (error) {
-    throw new Error(`Failed to load config from ${configPath}: ${error}`);
+  // 1. Load user_config
+  // 优先从 MongoDB 加载，如果失败则从文件加载
+  const configName = runtime.cliArgs.configName as string | undefined;
+
+  if (configName || process.env.BASE_DB) {
+    // 从 MongoDB 加载配置
+    try {
+      console.log(`[Config] Loading config from MongoDB${configName ? `: ${configName}` : ' (active config)'}...`);
+      userConfig = await loadConfigFromMongo(configName);
+      console.log('[Config] ✅ Config loaded from MongoDB');
+    } catch (error) {
+      // 如果 MongoDB 加载失败，回退到文件加载
+      console.warn(`[Config] Failed to load from MongoDB: ${error}`);
+      console.log('[Config] Falling back to file loading...');
+
+      const configPath = runtime.cliArgs.configPath || './config.json';
+      try {
+        userConfig = loadConfigFromFile(configPath);
+      } catch (fileError) {
+        throw new Error(`Failed to load config from both MongoDB and file (${configPath}): ${fileError}`);
+      }
+    }
+  } else {
+    // 从文件加载配置
+    const configPath = runtime.cliArgs.configPath || './config.json';
+    try {
+      userConfig = loadConfigFromFile(configPath);
+    } catch (error) {
+      throw new Error(`Failed to load config from ${configPath}: ${error}`);
+    }
   }
 
   // 2. Apply template resolution (replace date variables)

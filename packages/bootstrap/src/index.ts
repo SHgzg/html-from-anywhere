@@ -6,3 +6,4 @@
 
 export * from './registry-factory';
 export * from './bootstrap';
+export * from './config-loader';

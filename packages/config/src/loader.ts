@@ -1,7 +1,7 @@
 /**
  * Config Loader
  *
- * 负责从文件加载配置
+ * 负责从文件或 MongoDB 加载配置
  */
 
 import { readFileSync } from 'fs';
@@ -25,6 +25,22 @@ export interface UserConfig {
     spec?: Record<string, unknown>;
   }>;
   [key: string]: unknown;
+}
+
+/**
+ * 从 MongoDB 加载配置
+ *
+ * @param configName - 配置名称（可选）
+ * @returns UserConfig
+ */
+export async function loadConfigFromMongo(configName?: string): Promise<UserConfig> {
+  // 动态导入避免循环依赖
+  const bootstrap = await import('@report-tool/bootstrap');
+  const loadUserConfigFromMongo = bootstrap.loadUserConfigFromMongo as any;
+
+  const configDoc = await loadUserConfigFromMongo(configName);
+
+  return configDoc.config as UserConfig;
 }
 
 /**

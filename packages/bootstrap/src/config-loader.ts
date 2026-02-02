@@ -103,54 +103,101 @@ async function loadEnvConfigFromDb(db: Db): Promise<Record<string, any>> {
     .sort({ updatedAt: -1 })
     .toArray();
 
+  console.log('[Config Loader] Found configs:', configs.length);
+
   const envMap: Record<string, any> = {};
 
-  for (const config of configs) {
-    const doc = config as unknown as EnvConfigDocument;
-    envMap[doc.key] = doc.value;
-    console.log(`  ✓ Loaded: ${doc.key}`);
+  if (configs.length > 0) {
+    const latestConfig = configs[0];
+
+    // 检查是否是结构化配置格式（包含 minio, smtp, mail 等字段）
+    if ('minio' in latestConfig || 'smtp' in latestConfig || 'mail' in latestConfig) {
+      console.log('[Config Loader] Using structured config format');
+      // 直接使用结构化配置
+      if (latestConfig.minio) {
+        envMap.minio = latestConfig.minio;
+        console.log(`  ✓ Loaded minio config`);
+      }
+      if (latestConfig.smtp) {
+        envMap.smtp = latestConfig.smtp;
+        console.log(`  ✓ Loaded smtp config`);
+      }
+      if (latestConfig.mail) {
+        envMap.mail = latestConfig.mail;
+        console.log(`  ✓ Loaded mail config`);
+      }
+    } else {
+      // 使用 key-value 格式（旧格式）
+      console.log('[Config Loader] Using key-value config format');
+      for (const config of configs) {
+        const doc = config as unknown as EnvConfigDocument;
+        envMap[doc.key] = doc.value;
+        console.log(`  ✓ Loaded: ${doc.key}`);
+      }
+    }
   }
 
   console.log(`[Config Loader] Loaded ${Object.keys(envMap).length} system configs`);
+
+  // 打印读取后的配置
+  console.log('[Config Loader] Loaded envMap:', JSON.stringify(envMap, null, 2));
 
   return envMap;
 }
 
 /**
  * 从 envMap 构建 MinIO 配置
+ * 优先使用结构化配置（envMap.minio），回退到扁平化环境变量格式
  */
 function buildMinioConfig(envMap: Record<string, any>): Record<string, MinioConfig> {
-  // 支持多个 MinIO 实例
   const minioConfigs: Record<string, MinioConfig> = {};
 
-  // 查找所有 MinIO 相关的配置键
-  // 格式: MINIO_{NAME}_{PROP}, 例如 MINIO_DEFAULT_ENDPOINT, MINIO_BACKUP_ENDPOINT
-  const minioKeys = Object.keys(envMap).filter(k => k.startsWith('MINIO_'));
+  // 优先使用结构化配置
+  if (envMap.minio && typeof envMap.minio === 'object') {
+    console.log('[Config Loader] Building MinIO config from structured data');
 
-  const instances = new Set<string>();
-  minioKeys.forEach(key => {
-    const parts = key.split('_');
-    if (parts.length >= 3) {
-      instances.add(parts[1].toLowerCase());
-    }
-  });
+    Object.entries(envMap.minio).forEach(([instanceName, instanceConfig]: [string, any]) => {
+      minioConfigs[instanceName] = {
+        endpoint: instanceConfig.endpoint || 'localhost',
+        port: parseInt(instanceConfig.port || '9000'),
+        useSSL: instanceConfig.useSSL === true || instanceConfig.useSSL === 'true',
+        accessKey: instanceConfig.accessKey || '',
+        secretKey: instanceConfig.secretKey || '',
+        region: instanceConfig.region || 'us-east-1'
+      };
+      console.log(`  ✓ Built MinIO instance: ${instanceName}`);
+    });
+  } else {
+    // 回退到扁平化环境变量格式（向后兼容）
+    console.log('[Config Loader] Building MinIO config from env vars (legacy)');
 
-  // 构建每个 MinIO 实例的配置
-  instances.forEach(instance => {
-    const prefix = `MINIO_${instance.toUpperCase()}_`;
-    const config: MinioConfig = {
-      endpoint: envMap[`${prefix}ENDPOINT`] || 'localhost',
-      port: parseInt(envMap[`${prefix}PORT`] || '9000'),
-      useSSL: envMap[`${prefix}USE_SSL`] === true || envMap[`${prefix}USE_SSL`] === 'true',
-      accessKey: envMap[`${prefix}ACCESS_KEY`] || '',
-      secretKey: envMap[`${prefix}SECRET_KEY`] || '',
-      region: envMap[`${prefix}REGION`] || 'us-east-1'
-    };
-    minioConfigs[instance.toLowerCase()] = config;
-  });
+    const minioKeys = Object.keys(envMap).filter(k => k.startsWith('MINIO_'));
+    const instances = new Set<string>();
+
+    minioKeys.forEach(key => {
+      const parts = key.split('_');
+      if (parts.length >= 3) {
+        instances.add(parts[1].toLowerCase());
+      }
+    });
+
+    instances.forEach(instance => {
+      const prefix = `MINIO_${instance.toUpperCase()}_`;
+      const config: MinioConfig = {
+        endpoint: envMap[`${prefix}ENDPOINT`] || 'localhost',
+        port: parseInt(envMap[`${prefix}PORT`] || '9000'),
+        useSSL: envMap[`${prefix}USE_SSL`] === true || envMap[`${prefix}USE_SSL`] === 'true',
+        accessKey: envMap[`${prefix}ACCESS_KEY`] || '',
+        secretKey: envMap[`${prefix}SECRET_KEY`] || '',
+        region: envMap[`${prefix}REGION`] || 'us-east-1'
+      };
+      minioConfigs[instance] = config;
+    });
+  }
 
   // 如果没有配置任何实例，创建默认实例
   if (Object.keys(minioConfigs).length === 0) {
+    console.log('[Config Loader] No MinIO config found, using defaults');
     minioConfigs['default'] = {
       endpoint: 'localhost',
       port: 9000,
@@ -166,8 +213,32 @@ function buildMinioConfig(envMap: Record<string, any>): Record<string, MinioConf
 
 /**
  * 从 envMap 构建邮件配置
+ * 优先使用结构化配置（envMap.smtp, envMap.mail），回退到扁平化环境变量格式
  */
 function buildMailerConfig(envMap: Record<string, any>): MailerConfig {
+  // 优先使用结构化配置
+  if (envMap.smtp && envMap.mail) {
+    console.log('[Config Loader] Building mailer config from structured data');
+
+    return {
+      type: 'smtp',
+      smtp: {
+        host: envMap.smtp.host || 'smtp.example.com',
+        port: parseInt(envMap.smtp.port || '587'),
+        secure: envMap.smtp.secure === true || envMap.smtp.secure === 'true',
+        auth: {
+          user: envMap.smtp.auth?.user || '',
+          pass: envMap.smtp.auth?.pass || ''
+        }
+      },
+      defaultFrom: envMap.mail.from || 'noreply@example.com',
+      defaultReplyTo: envMap.mail.replyTo
+    };
+  }
+
+  // 回退到扁平化环境变量格式（向后兼容）
+  console.log('[Config Loader] Building mailer config from env vars (legacy)');
+
   return {
     type: 'smtp',
     smtp: {
@@ -227,15 +298,15 @@ export async function loadEnvConfigFromMongo(): Promise<EnvConfig> {
   // 5. 验证必需的配置存在
   const requiredConfigs = [];
 
+  // 验证 SMTP 配置（支持结构化和扁平化格式）
+  if (!envMap.smtp?.host && !envMap.SMTP_HOST) {
+    requiredConfigs.push('SMTP configuration (smtp.host or SMTP_HOST)');
+  }
+
   // 验证 MinIO 配置（至少需要一个实例）
   const minioConfigs = buildMinioConfig(envMap);
   if (Object.keys(minioConfigs).length === 0) {
-    requiredConfigs.push('MinIO configuration (MINIO_*)');
-  }
-
-  // 验证 SMTP 配置
-  if (!envMap.SMTP_HOST) {
-    requiredConfigs.push('SMTP_HOST');
+    requiredConfigs.push('MinIO configuration (minio.* or MINIO_*)');
   }
 
   if (requiredConfigs.length > 0) {
@@ -261,4 +332,85 @@ export async function loadEnvConfigFromMongo(): Promise<EnvConfig> {
   console.log('[Config Loader] ✅ All required configurations loaded');
 
   return envConfig;
+}
+
+/**
+ * User Config 文档结构
+ */
+export interface UserConfigDocument {
+  _id?: string;
+  name: string;
+  config: {
+    report?: {
+      title?: string;
+      data?: unknown[];
+    };
+    data?: Array<{
+      title: string;
+      tag: string;
+      source: unknown;
+      enhance?: string;
+    }>;
+    actions?: Array<{
+      type: string;
+      on: 'data_ready' | 'report_ready' | 'report_archived';
+      renderMode?: 'html' | 'email';
+      spec?: Record<string, unknown>;
+    }>;
+  };
+  active?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+/**
+ * 从 MongoDB 加载 User Config
+ *
+ * @param configName - 配置名称（可选，默认加载活跃配置）
+ * @returns UserConfigDocument
+ * @throws {Error} 如果 MongoDB 连接失败或配置不存在
+ */
+export async function loadUserConfigFromMongo(configName?: string): Promise<UserConfigDocument> {
+  const baseDbUri = process.env.BASE_DB;
+
+  if (!baseDbUri) {
+    throw new Error('BASE_DB environment variable is required');
+  }
+
+  const dbName = 'report_config';
+  const dbUri = baseDbUri.replace(/\/[^/?]*$/, '') + '/' + dbName;
+
+  console.log('[User Config Loader] Connecting to MongoDB...');
+  const client = new MongoClient(dbUri);
+  await client.connect();
+  console.log('[User Config Loader] Connected to MongoDB successfully');
+
+  const db = client.db(dbName);
+  const collection = db.collection('user_config');
+
+  let query: Record<string, unknown> = {};
+
+  if (configName) {
+    query.name = configName;
+    console.log(`[User Config Loader] Loading config: ${configName}`);
+  } else {
+    // 加载活跃的配置
+    query.active = true;
+    console.log('[User Config Loader] Loading active config...');
+  }
+
+  const configDoc = await collection.findOne(query as any);
+
+  if (!configDoc) {
+    await client.close();
+    throw new Error(configName
+      ? `User config "${configName}" not found`
+      : 'No active user config found');
+  }
+
+  await client.close();
+
+  console.log('[User Config Loader] ✅ Config loaded successfully');
+
+  return configDoc as unknown as UserConfigDocument;
 }
