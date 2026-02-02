@@ -91,23 +91,41 @@ export async function closeDbConnection(): Promise<void> {
 
 /**
  * 从 env collection 加载环境配置
+ *
+ * 对于每个 key，只取 update_time 最新的一条记录
  */
 async function loadEnvConfigFromDb(db: Db): Promise<Record<string, any>> {
   const collection = db.collection('env');
 
   console.log('[Config Loader] Loading system configs from env collection...');
 
-  const configs = await collection.find({}).toArray();
+  // 使用聚合管道，对每个 key 取最新的记录
+  const pipeline = [
+    // 按 updatedAt 降序排序（最新的在前）
+    { $sort: { updatedAt: -1 } },
+    // 按 key 分组，取每个 key 的第一条记录（即最新的）
+    {
+      $group: {
+        _id: '$key',
+        key: { $first: '$key' },
+        value: { $first: '$value' },
+        type: { $first: '$type' },
+        updatedAt: { $first: '$updatedAt' }
+      }
+    }
+  ];
+
+  const configs = await collection.aggregate(pipeline).toArray();
 
   const envMap: Record<string, any> = {};
 
   for (const config of configs) {
-    const envConfig = config as unknown as EnvConfigDocument;
-    envMap[envConfig.key] = envConfig.value;
-    console.log(`  ✓ Loaded: ${envConfig.key}`);
+    const doc = config as unknown as EnvConfigDocument;
+    envMap[doc.key] = doc.value;
+    console.log(`  ✓ Loaded: ${doc.key} (updated: ${doc.updatedAt?.toISOString() || 'N/A'})`);
   }
 
-  console.log(`[Config Loader] Loaded ${Object.keys(envMap).length} system configs`);
+  console.log(`[Config Loader] Loaded ${Object.keys(envMap).length} unique configs`);
 
   return envMap;
 }
