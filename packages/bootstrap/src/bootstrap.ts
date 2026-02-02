@@ -7,6 +7,7 @@
 import { RuntimeContext, EnvConfig, DateContext, CliArgs } from '@report-tool/types';
 import { createRegistries, lockRegistries, type Registries } from './registry-factory';
 import { parseCliArgs as parseCliArgsInternal, showHelp, showVersion } from './cli-parser';
+import { loadEnvConfigFromMongo } from './config-loader';
 import { getAllMockDataPlugins } from '@report-tool/data-core';
 import { htmlRenderPlugin } from '@report-tool/render-core';
 import { getAllMockActionPlugins, getNotificationPlugins, getStoragePlugins } from '@report-tool/action-core';
@@ -56,7 +57,7 @@ export async function bootstrap(): Promise<RuntimeContext> {
 
   // 3. 加载环境配置
   console.log('[Bootstrap] Loading environment config...');
-  const envConfig = loadEnvConfig();
+  const envConfig = await loadEnvConfig();
 
   // 4. 使用已解析的 CLI 参数
   const cliArgs = parseResult.args;
@@ -84,61 +85,11 @@ export async function bootstrap(): Promise<RuntimeContext> {
 /**
  * 加载环境配置
  *
- * TODO: 从 MongoDB 的 env collection 中获取配置
+ * 从 MongoDB 的 env collection 中获取配置
  */
-function loadEnvConfig(): EnvConfig {
-  // SKELETON: 返回模拟配置
-  // 真实实现应该从 userConfigDB.collection 中读取
-
-  // 使用 userConfigDB 的同一数据库，但使用 bak collection
-  const dbUri = process.env.MONGO_URI || 'mongodb://localhost:27017';
-  const dbName = process.env.MONGO_DATABASE || 'report_config';
-
-  return {
-    minio: {
-      // 默认 MinIO 配置
-      default: {
-        endpoint: process.env.MINIO_ENDPOINT || 'localhost',
-        port: parseInt(process.env.MINIO_PORT || '9000'),
-        useSSL: process.env.MINIO_USE_SSL === 'true',
-        accessKey: process.env.MINIO_ACCESS_KEY || 'minioadmin',
-        secretKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
-        region: process.env.MINIO_REGION || 'us-east-1'
-      },
-      // 可以配置多个 MinIO 实例，用户通过名称选择
-      backup: {
-        endpoint: process.env.MINIO_BACKUP_ENDPOINT || 'backup.example.com',
-        port: parseInt(process.env.MINIO_BACKUP_PORT || '9000'),
-        useSSL: true,
-        accessKey: process.env.MINIO_BACKUP_ACCESS_KEY || '',
-        secretKey: process.env.MINIO_BACKUP_SECRET_KEY || ''
-      }
-    },
-    userConfigDB: {
-      uri: dbUri,
-      database: dbName,
-      collection: process.env.MONGO_USER_CONFIG_COLLECTION || 'user_configs'
-    },
-    mailer: {
-      type: 'smtp',
-      smtp: {
-        host: process.env.SMTP_HOST || 'smtp.example.com',
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: process.env.SMTP_SECURE === 'true',
-        auth: {
-          user: process.env.SMTP_USER || 'user@example.com',
-          pass: process.env.SMTP_PASS || 'password'
-        }
-      },
-      defaultFrom: process.env.MAIL_FROM || 'noreply@example.com',
-      defaultReplyTo: process.env.MAIL_REPLY_TO
-    },
-    mailBackupDB: {
-      uri: dbUri,
-      database: dbName,
-      collection: process.env.MONGO_MAIL_BACKUP_COLLECTION || 'bak'
-    }
-  };
+async function loadEnvConfig(): Promise<EnvConfig> {
+  // 从 MongoDB 加载生产配置
+  return await loadEnvConfigFromMongo();
 }
 
 /**

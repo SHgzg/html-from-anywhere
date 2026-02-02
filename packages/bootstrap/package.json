@@ -10,14 +10,17 @@
     "test": "echo \"skip\""
   },
   "dependencies": {
-    "@report-tool/types": "workspace:*",
-    "@report-tool/registry-core": "workspace:*",
     "@report-tool/action-core": "workspace:*",
     "@report-tool/data-core": "workspace:*",
+    "@report-tool/enhance-core": "workspace:*",
+    "@report-tool/registry-core": "workspace:*",
     "@report-tool/render-core": "workspace:*",
-    "@report-tool/enhance-core": "workspace:*"
+    "@report-tool/types": "workspace:*",
+    "mongodb": "^6.21.0"
   },
-  "keywords": ["bootstrap"],
+  "keywords": [
+    "bootstrap"
+  ],
   "author": "",
   "license": "MIT"
 }
