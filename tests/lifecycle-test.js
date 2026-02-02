@@ -4,6 +4,9 @@
  * 验证各个生命周期的输入、输出和 Action 执行
  */
 
+// 加载 .env 环境变量
+require('dotenv').config();
+
 const { bootstrap } = require('../packages/bootstrap/dist/bootstrap');
 const { resolveConfig } = require('../packages/config/dist/index');
 const { fetchAllData } = require('../packages/data-core/dist/fetcher');
