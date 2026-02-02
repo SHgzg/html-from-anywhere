@@ -203,7 +203,20 @@ export async function loadEnvConfigFromMongo(): Promise<EnvConfig> {
   const dbName = 'report_config'; // 固定使用 report_config 数据库
 
   // 移除数据库名（如果有的话），统一使用 report_config
-  const dbUri = baseDbUri.replace(/\/[^/?]*$/, '') + '/' + dbName;
+  let dbUri = baseDbUri;
+
+  // 检查是否有数据库路径或查询参数
+  const hasPathOrQuery = /\/[^?]/.test(baseDbUri);
+
+  if (hasPathOrQuery) {
+    // 移除路径和查询参数，保留到主机端口部分
+    const url = new URL(baseDbUri);
+    // 重建 URI，移除 pathname 和 search
+    dbUri = `${url.protocol}//${url.host}${url.username || url.password ? `${url.username}:${url.password}@` : ''}`;
+  }
+
+  // 添加数据库名
+  dbUri = dbUri.endsWith('/') ? dbUri + dbName : dbUri + '/' + dbName;
 
   // 3. 连接数据库并加载配置
   const db = await getDbClient(dbUri, dbName);
