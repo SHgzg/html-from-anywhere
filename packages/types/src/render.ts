@@ -2,7 +2,7 @@
  * Render - 报告渲染相关类型
  */
 
-export type RenderMode = 'html' | 'email';
+export type RenderMode = 'html' | 'email' | 'markdown';
 
 export interface RenderResult {
   renderMode: RenderMode;

@@ -7,3 +7,6 @@
 export * from './registry';
 export * from './renderer';
 export * from './plugins/mock-render-plugin';
+export * from './plugins/html-render-plugin';
+export * from './plugins/email-render-plugin';
+export * from './plugins/markdown-render-plugin';

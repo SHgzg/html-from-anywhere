@@ -7,9 +7,9 @@
 import { RenderPlugin, DataResult, ExecutableConfig, RuntimeContext, RenderResult, RenderMode } from '@report-tool/types';
 
 /**
- * HTML Render Plugin
+ * HTML Render Plugin (Mock)
  */
-export const htmlRenderPlugin: RenderPlugin = {
+export const mockHtmlRenderPlugin: RenderPlugin = {
   name: 'mock-html-render',
   version: '1.0.0',
   compatibleContracts: '^1.0.0',
