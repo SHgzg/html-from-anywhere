@@ -9,3 +9,5 @@ export * from './executor';
 export * from './plugins/mock-action-plugins';
 export * from './plugins/notification-plugins';
 export * from './plugins/storage-plugins';
+export * from './plugins/database-storage-plugins';
+export * from './plugins/output-plugins';
