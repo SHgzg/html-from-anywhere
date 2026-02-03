@@ -6,3 +6,4 @@
 
 export * from './registry';
 export * from './enhancer';
+export * from './plugins/template-enhance-plugin';
