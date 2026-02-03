@@ -7,9 +7,9 @@
 import { DataPlugin, DataItemConfig, RuntimeContext, DataResult, DataSourceType } from '@report-tool/types';
 
 /**
- * File Data Plugin
+ * File Data Plugin (Mock)
  */
-export const fileDataPlugin: DataPlugin = {
+export const mockFileDataPlugin: DataPlugin = {
   name: 'mock-file-data',
   version: '1.0.0',
   compatibleContracts: '^1.0.0',
@@ -42,9 +42,9 @@ export const fileDataPlugin: DataPlugin = {
 };
 
 /**
- * HTTPS Data Plugin
+ * HTTPS Data Plugin (Mock)
  */
-export const httpsDataPlugin: DataPlugin = {
+export const mockHttpsDataPlugin: DataPlugin = {
   name: 'mock-https-data',
   version: '1.0.0',
   compatibleContracts: '^1.0.0',
@@ -78,9 +78,9 @@ export const httpsDataPlugin: DataPlugin = {
 };
 
 /**
- * Inline Data Plugin
+ * Inline Data Plugin (Mock)
  */
-export const inlineDataPlugin: DataPlugin = {
+export const mockInlineDataPlugin: DataPlugin = {
   name: 'mock-inline-data',
   version: '1.0.0',
   compatibleContracts: '^1.0.0',
@@ -115,8 +115,8 @@ export const inlineDataPlugin: DataPlugin = {
  */
 export function getAllMockDataPlugins(): Map<DataSourceType, DataPlugin> {
   return new Map([
-    ['file', fileDataPlugin],
-    ['https', httpsDataPlugin],
-    ['inline', inlineDataPlugin]
+    ['file', mockFileDataPlugin],
+    ['https', mockHttpsDataPlugin],
+    ['inline', mockInlineDataPlugin]
   ]);
 }

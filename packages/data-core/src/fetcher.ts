@@ -58,13 +58,22 @@ export async function fetchAllData(
  */
 export function detectSourceType(source: unknown): DataSourceType {
   if (typeof source === 'string') {
+    // Check for HTTP/HTTPS URLs
     if (source.startsWith('http://') || source.startsWith('https://')) {
       return 'https';
     }
-    if (source.startsWith('/') || source.startsWith('./')) {
+
+    // Check for glob patterns (contains wildcards) before checking for file paths
+    if (source.includes('*') || source.includes('?') || source.includes('[')) {
+      return 'glob';
+    }
+
+    // Check for file paths
+    if (source.startsWith('/') || source.startsWith('./') || source.startsWith('../')) {
       return 'file';
     }
-    // 尝试解析为 inline JSON
+
+    // Try to parse as inline JSON
     try {
       JSON.parse(source);
       return 'inline';
@@ -81,6 +90,9 @@ export function detectSourceType(source: unknown): DataSourceType {
         type === 'inline' || type === 'glob' || type === 'db') {
       return type as DataSourceType;
     }
+
+    // Object without explicit type field - treat as inline
+    return 'inline';
   }
 
   throw new Error(`Cannot detect data source type: ${JSON.stringify(source)}`);

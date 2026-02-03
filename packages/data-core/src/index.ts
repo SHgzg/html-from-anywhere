@@ -7,3 +7,4 @@
 export * from './registry';
 export * from './fetcher';
 export * from './plugins/mock-data-plugins';
+export * from './plugins/data-plugins';

@@ -11,7 +11,13 @@
   },
   "dependencies": {
     "@report-tool/types": "workspace:*",
-    "@report-tool/registry-core": "workspace:*"
+    "@report-tool/registry-core": "workspace:*",
+    "follow-redirects": "^1.15.6",
+    "glob": "^11.0.0",
+    "mongodb": "^6.12.0"
+  },
+  "devDependencies": {
+    "@types/follow-redirects": "^1.15.1"
   },
   "keywords": ["data"],
   "author": "",
